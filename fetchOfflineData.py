@@ -46,7 +46,7 @@ def fetchData(mediathek, archivePath, link = None):
     mediathekInstance = mediathek(xmlWriter);
     xmlWriter.log("Link: "+link);
     if(link.startswith("http://")):
-      mediathekInstance.buildPageMenu(link);
+      mediathekInstance.buildPageMenu(link, 0);
     else:
       mediathekInstance.buildMenu(link.split('.'))
     
