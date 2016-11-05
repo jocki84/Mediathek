@@ -24,18 +24,18 @@ CONFIG_CDN = 'https://config-cdn.cellular.de/zdf/mediathek/config/android/4_0/zd
 def jsonItem(url, *path):
     """Return the item from the JSON at the given :url.
     """
-    res = json.loads(urllib2.urlopen(url, None, 60).read())
+    res = json.load(urllib2.urlopen(url, None, 60))
     for i in path:
         res = res[i]
     return res
 
 def teaserBild(teaserBild):
-    """Pick the first resolution above 640.
+    """Pick the first resolution above 840.
     """
     largest = None
     for res, bild in teaserBild.iteritems():
         largest = bild
-        if 640 <= int(res):
+        if 840 <= int(res):
             break
     return largest
 
@@ -101,7 +101,7 @@ class ZDFMediathek(Mediathek):
                         time.strptime(teaser['airtime'], "%d.%m.%Y %H:%M")
                                 if 'airtime' in teaser
                                 else None,
-                        int(teaser['length'])
+                        teaser['length']
                     ),
                     self,
                     1
