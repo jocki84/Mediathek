@@ -62,23 +62,15 @@ class SimpleXbmcGui(object):
         
         self.log(url);
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=listItem,isFolder=True,totalItems = objectCount)
+      elif(displayObject.isPlayable == "JsonLink"):
+        link = displayObject.link
+
+        url = "%s?type=%s&action=openJsonLink&link=%s" % (sys.argv[0],mediathek.name(), urllib.quote_plus(link));
+        listItem.setProperty('IsPlayable', 'true');
+        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=listItem,isFolder=False,totalItems = objectCount)
       else:
         self.log(displayObject.title);
-        if(self.quality in displayObject.link):
-          link = displayObject.link[self.quality];
-        else:
-          selectedKey = -1;
-          for key in displayObject.link.keys():
-            if(key < self.quality and key > selectedKey):
-              selectedKey = key;
-          if(selectedKey > -1):
-            link = displayObject.link[selectedKey];
-          else:
-            selectedKey = displayObject.link.keys()[0];
-            for key in displayObject.link.keys():
-              if(key < selectedKey):
-                selectedKey = key;
-            link = displayObject.link[selectedKey];
+        link = self.extractLink(self, displayObject.link);
         
         if(type(link).__name__ == "ComplexLink"):
           self.log("PlayPath:"+ link.playPath);
@@ -178,3 +170,25 @@ class SimpleXbmcGui(object):
       xbmcgui.Dialog().ok( title, msg, e )  
     else:
       xbmcgui.Dialog().ok( title, msg)  
+
+  def play(self,links):
+    link = self.extractLink(links);
+    listItem = xbmcgui.ListItem(path=link.basePath)
+    xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem=listItem)
+
+  def extractLink(self, links):
+    if(self.quality in links):
+      return links[self.quality];
+    else:
+      selectedKey = -1;
+      for key in links.keys():
+        if(key < self.quality and key > selectedKey):
+          selectedKey = key;
+      if(selectedKey > -1):
+        return links[selectedKey];
+      else:
+        selectedKey = links.keys()[0];
+        for key in links.keys():
+          if(key < selectedKey):
+            selectedKey = key;
+        return links[selectedKey];

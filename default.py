@@ -89,6 +89,10 @@ else:
       mediathek.searchVideo(searchText);
     else:
       gui.back();
+  elif(action == "openJsonLink"):
+    link = urllib.unquote_plus(params.get("link", ""));
+    gui.log(link)
+    mediathek.playVideoFromJsonLink(link);
   else:
     if(mediathek.isSearchable()):
       gui.addSearchButton(mediathek);

@@ -82,22 +82,14 @@ class ZDFMediathek(Mediathek):
                     teaser['videoCount']
                 )
             elif 'video' == teaser['type']:
-                links = {}
-                for formitaet in jsonItem(teaser['url'], 'document', 'formitaeten'):
-                    if -1 < formitaet['type'].find('http_na_na'):
-                        q =      0 if 'low' == formitaet['quality'] \
-                            else 1 if 'high' == formitaet['quality'] \
-                            else 2
-                        links[q] = SimpleLink(formitaet['url'], 0)
-
                 self.gui.buildVideoLink(
                     DisplayObject(
                         teaser['brandTitle'],
                         teaser['titel'],
                         teaserBild(teaser['teaserBild'])['url'],
                         teaser['beschreibung'],
-                        links,
-                        True,
+                        teaser['url'],
+                        "JsonLink",
                         time.strptime(teaser['airtime'], "%d.%m.%Y %H:%M")
                                 if 'airtime' in teaser
                                 else None,
@@ -108,3 +100,14 @@ class ZDFMediathek(Mediathek):
                 )
             else:
                 raise 'Unknown teaser type %r' % teaser['type']
+
+  def playVideoFromJsonLink(self, link):
+    links = {}
+    for formitaet in jsonItem(link, 'document', 'formitaeten'):
+        if -1 < formitaet['type'].find('http_na_na'):
+            q =      0 if 'low' == formitaet['quality'] \
+                else 1 if 'high' == formitaet['quality'] \
+                else 2
+            links[q] = SimpleLink(formitaet['url'], 0)
+
+    self.gui.play(links)
