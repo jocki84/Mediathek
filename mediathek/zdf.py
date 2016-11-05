@@ -55,7 +55,6 @@ class ZDFMediathek(Mediathek):
   def buildPageMenu(self, link, initCount):
     self.gui.log("buildPageMenu: "+link);
     jsonObject = json.loads(self.loadPage(link));
-    callhash = self.gui.storeJsonFile(jsonObject);
     
     if("stage" in jsonObject):
       for stageObject in jsonObject["stage"]:
@@ -66,12 +65,12 @@ class ZDFMediathek(Mediathek):
       for counter, clusterObject in enumerate(jsonObject["cluster"]):
         if "teaser" in clusterObject and "name" in clusterObject:
           path = "cluster.%d.teaser"%(counter)
-          self.gui.buildJsonLink(self,clusterObject["name"],path,callhash,initCount)
+          self.gui.buildJsonLink(self,clusterObject["name"],link,path,initCount)
     if("broadcastCluster" in jsonObject):
       for counter, clusterObject in enumerate(jsonObject["broadcastCluster"]):
         if clusterObject["type"].startswith("teaser") and "name" in clusterObject:
           path = "broadcastCluster.%d.teaser"%(counter)
-          self.gui.buildJsonLink(self,clusterObject["name"],path,callhash,initCount)
+          self.gui.buildJsonLink(self,clusterObject["name"],link,path,initCount)
     if("epgCluster" in jsonObject):
       for epgObject in jsonObject["epgCluster"]:
         if("liveStream" in epgObject and len(epgObject["liveStream"])>0):
@@ -79,8 +78,8 @@ class ZDFMediathek(Mediathek):
     
           
         
-  def buildJsonMenu(self, path,callhash, initCount):
-    jsonObject=self.gui.loadJsonFile(callhash);
+  def buildJsonMenu(self, link, path, initCount):
+    jsonObject=json.loads(self.loadPage(link))
     jsonObject=self.walkJson(path,jsonObject);
    
     categoriePages=[];
