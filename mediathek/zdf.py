@@ -97,10 +97,11 @@ class ZDFMediathek(Mediathek):
     for categoriePage in categoriePages:
       title=categoriePage["titel"];
       subTitle=categoriePage["beschreibung"];
-      imageLink="";
+      imageLink = None
       for width,imageObject in categoriePage["teaserBild"].iteritems():
-        if int(width)<=840:
-          imageLink=imageObject["url"];
+        imageLink = imageObject["url"]
+        if 640 <= int(width):
+          break
       url = categoriePage["url"];
       self.gui.buildVideoLink(DisplayObject(title,subTitle,imageLink,"",url,False),self,initCount);
     
@@ -118,10 +119,11 @@ class ZDFMediathek(Mediathek):
       title = subTitle;
       subTitle = "";
     description=videoObject["beschreibung"];
-    imageLink="";
+    imageLink = None
     for width,imageObject in videoObject["teaserBild"].iteritems():
-      if int(width)<=840:
-        imageLink=imageObject["url"];
+      imageLink = imageObject["url"]
+      if 640 <= int(width):
+        break
     if("formitaeten" in videoObject):
       links = self.extractLinks(videoObject);
       self.gui.buildVideoLink(DisplayObject(title,subTitle,imageLink,description,links,True,None,videoObject.get('length')),self,counter);
