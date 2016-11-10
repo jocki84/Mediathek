@@ -89,7 +89,9 @@ class ZDFMediathek(Mediathek):
     for entry in jsonObject:
       if entry["type"] == "brand":
         categoriePages.append(entry);
-      if entry["type"] == "video" and len(videoObjects) < 50:
+      if entry["type"] == "video" and \
+         "teaserBild" in entry and \
+         len(videoObjects) < 50:
         videoObjects.append(entry);  
     
     self.gui.log("CategoriePages: %d"%len(categoriePages));
